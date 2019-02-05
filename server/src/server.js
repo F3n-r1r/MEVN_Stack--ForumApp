@@ -6,6 +6,7 @@ const morgan = require('morgan')
 const jwt = require('jsonwebtoken')
 
 const users = require('./routes/UsersRoute')
+const posts = require('./routes/PostRoute')
 const mongoose = require('./config/database')
 
 // Inform that the app is an express app
@@ -32,7 +33,7 @@ mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection 
 app.use('/users', users)
 
 // Private routes (Need to be authenticated to access)
-
+app.use('/posts', validateUser, posts)
 
 
 // Function to pass in to the routes.
