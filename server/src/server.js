@@ -5,7 +5,7 @@ const cors = require('cors')
 const morgan = require('morgan')
 const jwt = require('jsonwebtoken')
 
-
+const users = require('./routes/UsersRoute')
 const mongoose = require('./config/database')
 
 // Inform that the app is an express app
@@ -16,7 +16,8 @@ app.use(morgan('combined'))
 app.use(bodyParser.urlencoded({extended: false}))
 // Tell app to use cors to allow a client to access it
 app.use(cors())
-
+//
+app.set('secretKey', 'randomkey')
 
 
 
@@ -25,6 +26,33 @@ app.use(cors())
 mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
 
+
+
+// Public routes (Dont need to be authenticated to access)
+app.use('/users', users)
+
+// Private routes (Need to be authenticated to access)
+
+
+
+// Function to pass in to the routes.
+// Gets the token, decodes it and tries to match the decoded user id to the user id.
+// If they match it return next, which then means that the user is logged in.
+// And can proced through to the protected route
+function validateUser(req, res, next) {
+    jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function(err, decoded) {
+        if (err) {
+            res.json({
+                status: 'error',
+                message: err.message,
+                data: null
+            })
+        } else {
+            req.body.userId = decoded.userId
+            next();
+        }
+    })
+}
 
 
 
