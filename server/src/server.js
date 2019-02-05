@@ -6,6 +6,7 @@ const morgan = require('morgan')
 const jwt = require('jsonwebtoken')
 
 
+const mongoose = require('./config/database')
 
 // Inform that the app is an express app
 const app = express()
@@ -19,8 +20,10 @@ app.use(cors())
 
 
 
+
 // Connection to the mongodb, which is placed in './config/database.js'
 mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'))
+
 
 
 
