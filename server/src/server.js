@@ -19,6 +19,13 @@ app.use(cors())
 
 
 
+// Connection to the mongodb, which is placed in './config/database.js'
+mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'))
+
+
+
+
+
 // Set a port for the server to start on (process.env.PORT allows for the port to be overriden eg. when deployed)
 const port = process.env.PORT || 8081
 // Function that takes in the parameter port which in this case is: 8081 -> "Busy Port Handling"
