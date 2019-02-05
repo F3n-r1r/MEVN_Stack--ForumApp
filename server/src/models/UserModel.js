@@ -37,7 +37,13 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
         lowercase: true
+    },
+    role: {
+        type: String,
+        enum: ['User', 'Admin'],
+        default: 'User'
     }
+
 })
 
 // Mongoose provide the 'pre' middleware, to manipulate data before inserting it into the database
