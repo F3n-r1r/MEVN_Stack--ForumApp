@@ -3,6 +3,9 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
+const jwt = require('jsonwebtoken')
+
+
 
 // Inform that the app is an express app
 const app = express()
@@ -12,3 +15,31 @@ app.use(morgan('combined'))
 app.use(bodyParser.urlencoded({extended: false}))
 // Tell app to use cors to allow a client to access it
 app.use(cors())
+
+
+
+
+// Set a port for the server to start on (process.env.PORT allows for the port to be overriden eg. when deployed)
+const port = process.env.PORT || 8081
+// Function that takes in the parameter port which in this case is: 8081 -> "Busy Port Handling"
+function listen (port) {
+    // If no error then app will listen on the specified port, and console log a msg
+    app.listen(port, () => {
+        console.log(`server is running on port: ${port}`);
+        // If there is an error do the following function which takes in that error
+    }).on('error', function (err) {
+        // If that error equals "EADDRINUSE" which means the port is in already in use, then increment port number by 1, and run the listen function again
+        // Works without the "errno", it is just more specific this way
+        if(err.errno === 'EADDRINUSE') {
+            console.log(`----- Port ${port} is busy, trying with port ${port + 1} -----`);
+            listen(port + 1)
+            // Else if it can't start on the port and it the error isn't that the port is in use, then just console log the error
+        } else {
+            console.log(err);
+        }
+    });
+}
+// Call the "listen" function an pass in the "const port"
+listen(port);
+
+
